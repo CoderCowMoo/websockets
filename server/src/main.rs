@@ -14,10 +14,13 @@ fn main() {
     for stream in server.incoming() {
         // spawn a separate thread to handle each connection
         spawn(move || {
-            let mut websocket = match accept(stream.unwrap()) {
+            let streamunwrap = stream.unwrap();
+            let mut websocket = match accept(&streamunwrap) {
                 Ok(o) => o,
                 Err(e) => panic!("Failure in accepting stream: {}", e),
             };
+
+            println!("Accepted stream: {}", streamunwrap.peer_addr().unwrap());
             loop {
                 let msg = match websocket.read_message() {
                     Ok(o) => o,
